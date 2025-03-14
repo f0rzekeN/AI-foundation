@@ -2,36 +2,28 @@ import sys
 def dijkstra():
     n, m = map(int, sys.stdin.readline().split())
     INF = float('inf')
-    # 初始化邻接矩阵，g[x][y]表示从x到y的边权，初始为无穷大
     g = [[INF] * (n + 1) for _ in range(n + 1)]
-    # 处理每条边，保留最短的边权（处理重边）
-    for _ in range(m):
+    for _ in range(m): #处理边
         x, y, z = map(int, sys.stdin.readline().split())
-        if z < g[x][y]:  # 如果新边更短，则更新
+        if z < g[x][y]:
             g[x][y] = z
-    # 初始化距离数组，dist[i]表示起点1到i的最短距离
-    dist = [INF] * (n + 1)
-    dist[1] = 0          # 起点到自身的距离为0
-    # 标记节点是否已确定最短路径
-    visited = [False] * (n + 1)
-    # Dijkstra算法核心：循环n次，每次确定一个节点的最短路径
-    for _ in range(n):
-        # 找到当前未访问且距离最小的节点u
-        u = -1
+    dist = [INF] * (n + 1) #初始化距离数组，dist[i]表示起点1到i的最短距离
+    dist[1] = 0
+    visited = [False] * (n + 1) #标记节点是否已确定最短路径
+    for _ in range(n): #dijkstra
+        u = -1 #找到当前未访问且距离最小的节点u
         min_dist = INF
         for i in range(1, n + 1):
             if not visited[i] and dist[i] < min_dist:
                 min_dist = dist[i]
                 u = i
-        if u == -1:  # 所有可达节点已处理完毕
+        if u == -1:
             break
-        visited[u] = True  # 标记u已确定最短路径
-        # 通过u更新所有邻接节点v的距离
-        for v in range(1, n + 1):
+        visited[u] = True #标记u已确定最短路径
+        for v in range(1, n + 1): #通过u更新所有邻接节点v的距离
             if g[u][v] != INF and not visited[v]:
                 if dist[v] > dist[u] + g[u][v]:
                     dist[v] = dist[u] + g[u][v]
-    # 输出结果：若不可达则返回-1，否则返回最短距离
     print(-1 if dist[n] == INF else dist[n])
 if __name__ == "__main__":
     dijkstra()
