@@ -1,0 +1,40 @@
+from collections import deque
+def main():
+    input_str = input().strip().split()
+    start = []
+    for c in input_str:
+        if c == 'x':
+            start.append(0)
+        else:
+            start.append(int(c))
+    goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+    start_tuple = tuple(start)
+    if start_tuple == goal:
+        print(0)
+        return
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    queue = deque()
+    queue.append((start_tuple, 0)) #（当前状态，已走步数）
+    visited = set()
+    visited.add(start_tuple) #记录已经访问过的状态，避免重复访问
+    while queue:
+        state, steps = queue.popleft() #取出元素
+        zero_index = state.index(0) #找到空格（0）的位置
+        x, y = zero_index // 3, zero_index % 3 #计算空格所在的行和列
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy #新的位置
+            if 0 <= nx < 3 and 0 <= ny < 3:
+                new_index = nx * 3 + ny #新位置的索引
+                new_state = list(state)
+                new_state[zero_index], new_state[new_index] = new_state[new_index], new_state[zero_index]
+                new_state_tuple = tuple(new_state)
+                if new_state_tuple == goal: #检查是否达到目标状态
+                    print(steps + 1)
+                    return
+                if new_state_tuple not in visited: #如果新状态未被访问过，加入队列并标记为已访问
+                    visited.add(new_state_tuple)
+                    queue.append((new_state_tuple, steps + 1))
+    print(-1)
+
+if __name__ == "__main__":
+    main()
