@@ -1,0 +1,32 @@
+import heapq
+
+def main():
+    n, m = map(int, input().split())
+    graph = [[] for _ in range(n + 1)] #图的节点编号从1到n
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        graph[u].append((v, w)) #有向边 u->v，权重为w
+    start = 1
+    end = n
+    INF = float('inf')
+    distance = [INF] * (n + 1)
+    distance[start] = 0
+    heap = [] #优先队列，距离，节点）
+    heapq.heappush(heap, (0, start))
+    visited = [False] * (n + 1) #记录访问过的节点
+    while heap:
+        dist_u, u = heapq.heappop(heap)
+        if visited[u]:
+            continue
+        if u == end:
+            print(dist_u)
+            return
+        visited[u] = True
+        for v, w in graph[u]:
+            # 如果当前路径到v的距离更小，则更新
+            if distance[v] > distance[u] + w:
+                distance[v] = distance[u] + w
+                heapq.heappush(heap, (distance[v], v))
+    print(-1)
+if __name__ == "__main__":
+    main()
