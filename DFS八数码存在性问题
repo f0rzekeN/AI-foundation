@@ -1,54 +1,45 @@
 from collections import deque
 goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
-def is_goal(state):
-    return state == goal
-def visited(visited_states, state):
-    return state in visited_states
-def find_zero(state):
-    for i in range(9):
-        if state[i] == 0:
-            return i
-def swap(state, i, j): #交换函数
-    state_list = list(state)
-    state_list[i], state_list[j] = state_list[j], state_list[i]
-    return tuple(state_list)
-def generate_new_states(state): #生成所有可能的新状态
+def generate_new_states(state):
     new_states = []
-    zero_pos = find_zero(state)
-    i, j = zero_pos // 3, zero_pos % 3 #计算0所在的行和列
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] #上，下，左，右四个方向
-    for di, dj in directions:
-        ni, nj = i + di, j + dj #新的位置
+    pos0 = state.index(0)
+    i, j = pos0 // 3, pos0 % 3
+    dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for di, dj in dir:
+        ni, nj = i + di, j + dj
         if 0 <= ni < 3 and 0 <= nj < 3:
-            new_pos = ni * 3 + nj #新位置的索引
-            new_state = swap(state, zero_pos, new_pos) #交换数值，生成新状态
-            new_states.append(new_state)
+            new_pos = ni * 3 + nj
+            new_state = list(state)
+            new_state[pos0], new_state[new_pos] = new_state[new_pos], new_state[pos0]
+            new_states.append(tuple(new_state))
     return new_states
-
 def dfs(state, depth=0):
-    if is_goal(state):
+    if state == goal:
         return depth #如果当前状态是目标状态，返回当前深度（即交换次数）
     visited_states = set() #记录已访问的状态
-    queue = deque([(state, depth)]) #队列，存储当前状态和深度
-    while queue:
-        state, depth = queue.popleft()
+    q = deque([(state, depth)]) #队列，存储当前状态和深度
+    while q:
+        state, depth = q.popleft()
         if state in visited_states:
             continue #如果状态已访问过就跳过
         visited_states.add(state) #标记当前状态为已访问
         for new_state in generate_new_states(state): #遍历所有可能的新状态
-            if is_goal(new_state):
+            if new_state == goal:
                 return depth + 1  # 如果新状态是目标状态，返回深度+1
-            queue.append((new_state, depth + 1))  # 将新状态加入队列
-    return -1 #如果队列为空且未找到目标状态，返回-1表示无解
-input_str = input().strip()
-state = []
-for char in input_str:
-    if char == 'x':
-        state.append(0)
-    elif char.isdigit():
-        state.append(int(char))
-result = dfs(tuple(state))
-if result == -1:
-    print(0)
-else:
-    print(1)
+            q.append((new_state, depth + 1))  # 将新状态加入队列
+    return -1
+def main():
+    input_str = input().strip().split()
+    state = []
+    for c in input_str:
+        if c == 'x':
+            state.append(0)
+        elif c.isdigit():
+            state.append(int(c))
+    result = dfs(tuple(state))
+    if result == -1:
+        print(0)
+    else:
+        print(1)
+if __name__ == "__main__":
+    main()
