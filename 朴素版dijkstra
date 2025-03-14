@@ -24,6 +24,9 @@ def dijkstra():
             if g[u][v] != INF and not visited[v]:
                 if dist[v] > dist[u] + g[u][v]:
                     dist[v] = dist[u] + g[u][v]
-    print(-1 if dist[n] == INF else dist[n])
+    if dist[n] == INF:
+        print(-1)
+    else:
+        print(dist[n])
 if __name__ == "__main__":
     dijkstra()
