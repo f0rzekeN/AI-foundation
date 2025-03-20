@@ -31,7 +31,7 @@ def bfs(start, goal):
     return -1
 
 def main():
-    input_str = input().strip().split()
+    input_str = sys.stdin.readline().split()
     start = []
     for c in input_str:
         if c == 'x':
